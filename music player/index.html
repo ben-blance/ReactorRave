@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    <title>Visualizer</title>
+</head>
+<body>
+    
+    
+    <audio src="music\i.mp3"></audio>
+    <div class="box">
+        <div class="visualizer"></div>
+    </div>
+
+    <div class="play">
+        <div class="btn btn-play"></div>
+    </div>
+
+    <div class="Loverlay">
+        <img src="spidy.png" alt="overlay imge" id="reloadPage">
+    </div>
+
+    <div class="overlay">
+        <label for="fileInput">
+            <img src="ironman.png" alt="overlay image">
+        </label>
+        <input type="file" id="fileInput" accept="audio/*" style="display: none;">
+    </div> 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.querySelector('.btn');
+    const audio = document.querySelector('audio');
+    const visualizer = document.querySelector('.visualizer');
+    const ironManOverlay = document.getElementById('fileInput');
+
+    let ctx; // Declare the AudioContext variable
+    let audioElements = []; // Array to store all audio elements
+    let currentAudioIndex = 0; // Index of the currently playing audio
+
+    btn.addEventListener('click', togglePlay);
+
+    const reloadPageButton = document.getElementById('reloadPage');
+            reloadPageButton.addEventListener('click', () => {
+                location.reload();
+            });
+
+    ironManOverlay.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const newAudio = document.createElement('audio');
+            newAudio.src = URL.createObjectURL(file);
+            audioElements.push(newAudio);
+            if (audioElements.length === 1) {
+                playAudio(0); // Start playing the new song if it's the first one added
+            }
+        }
+    });
+
+    function togglePlay() {
+        if (audioElements.length > 0) {
+            const currentAudio = audioElements[currentAudioIndex];
+            if (currentAudio.paused) {
+                currentAudio.play();
+                btn.classList.add('btn-pause');
+                btn.classList.remove('btn-play');
+            } else {
+                currentAudio.pause();
+                btn.classList.remove('btn-pause');
+                btn.classList.add('btn-play');
+            }
+        }
+    }
+
+    function playAudio(index) {
+    const currentAudio = audioElements[index];
+    if (!ctx) {
+        // Create AudioContext on the first user click
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    // Clear existing visualization elements
+    visualizer.innerHTML = '';
+
+    // Set up visualization
+    const analyser = ctx.createAnalyser();
+    const source = ctx.createMediaElementSource(currentAudio);
+    source.connect(analyser);
+    source.connect(ctx.destination);
+    analyser.fftSize = 64;
+
+    const bufferLength = analyser.frequencyBinCount;
+    let dataArray = new Uint8Array(bufferLength);
+    let elements = [];
+
+    for (let i = 0; i < bufferLength; i++) {
+        const element = document.createElement('span');
+        element.classList.add('element');
+        elements.push(element);
+        visualizer.appendChild(element);
+    }
+
+    const clamp = (num, min, max) => {
+        if (num >= max) return max;
+        if (num <= min) return min;
+        return num;
+    }
+
+    const update = () => {
+        requestAnimationFrame(update);
+        analyser.getByteFrequencyData(dataArray);
+        for (let i = 0; i < bufferLength; i++) {
+            let item = dataArray[i];
+            item = item > 150 ? item / 1.5 : item * 1.5;
+            elements[i].style.transform = `rotateZ(${i * (360 / bufferLength)}deg) translate(-50%, ${clamp(item, 100, 150)}px)`;
+        }
+    };
+    update();
+
+    currentAudio.addEventListener('ended', () => {
+        currentAudioIndex++;
+        if (currentAudioIndex < audioElements.length) {
+            playAudio(currentAudioIndex);
+        } else {
+            currentAudioIndex = 0;
+            btn.classList.remove('btn-pause');
+            btn.classList.add('btn-play');
+        }
+    });
+
+    // Play the current audio
+    currentAudio.play();
+    btn.classList.add('btn-pause');
+    btn.classList.remove('btn-play');
+}
+
+});
+    </script>
+    
+   
+</body>
+
+
+</html>

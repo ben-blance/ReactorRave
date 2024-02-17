@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+html, body, .box {
+    width: 100%;
+    height: 100%;
+    background: #121212; /* Set background to dark grey */
+}
+
+.box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: grayscale(100%) contrast(10); /* Convert to black and white */
+    mix-blend-mode: screen;
+}
+
+.play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.047) 10%, rgba(18, 18, 18, 1) 80%); /* Radial gradient for white glow */
+    border-radius: 50%;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-play {
+    border-left: 80px solid #00bcd4; /* Set border color to cyan */
+    border-bottom: 50px solid transparent;
+    border-top: 50px solid transparent;
+    cursor: pointer;
+}
+
+.btn-pause {
+    border-right: 20px solid #00bcd4; /* Set border color to cyan */
+    border-left: 20px solid #00bcd4; /* Set border color to cyan */
+    width: 75px;
+    height: 100px;
+    cursor: pointer;
+}
+
+.element {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    width: 58px;
+    height: 58px;
+    border-radius: 10px;
+    border: 5px solid #00bcd4; /* Set border color to cyan */
+    border-top: 40px solid #00bcd4; /* Set border color to cyan */
+    border-right: 20px solid transparent;
+    border-left: 20px solid transparent;
+    transform-origin: top left;
+    transition: .25s;
+}
+
+.visualizer {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1a1a1a, #121212); /* Set gradient to dark grey */
+    box-shadow: 0 0 20px rgb(18, 18, 18);
+    transition: background 0.5s, transform 0.5s;
+    transform: rotateZ(180deg);
+    animation: pulse 2s infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        transform: rotateZ(180deg) scale(1);
+    }
+    50% {
+        transform: rotateZ(180deg) scale(1.1);
+    }
+    100% {
+        transform: rotateZ(180deg) scale(1);
+    }
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0px; /* Adjust the distance from the bottom as needed */
+    right: 20px; /* Adjust the distance from the right as needed */
+    opacity: 0.8; /* Set the opacity level */
+    z-index: 100; /* Ensure it's above other elements */
+    text-align: right; /* Align the image to the right within the overlay */
+}
+
+.overlay img {
+    width: 313px; /* Adjust the width of the image */
+    height: auto; /* Maintain the aspect ratio */
+    border-radius: 5px; /* Optional: Add border radius for rounded corners */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.Loverlay {
+    position: absolute;
+    top: 0px; /* Adjust the distance from the bottom as needed */
+    left: 20px; /* Adjust the distance from the right as needed */
+    opacity: 0.9; /* Set the opacity level */
+    z-index: 100; /* Ensure it's above other elements */
+    text-align: left; /* Align the image to the right within the overlay */
+}
+
+.Loverlay img {
+    width: 313px; /* Adjust the width of the image */
+    height: auto; /* Maintain the aspect ratio */
+    border-radius: 5px; /* Optional: Add border radius for rounded corners */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
